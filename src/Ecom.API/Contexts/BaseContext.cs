@@ -14,6 +14,12 @@ namespace Ecom.API.Contexts
 
         public DbSet<Product> Products { get; set; }
 
+
+        public virtual void Commit()
+        {
+            base.SaveChanges();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

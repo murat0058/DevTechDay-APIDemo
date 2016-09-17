@@ -1,5 +1,6 @@
 ﻿using Ecom.API.Entities;
 using Ecom.API.Infrastructures.Extensions;
+using Ecom.API.Repository;
 using Ecom.API.Repository.Abstract;
 using Ecom.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +19,13 @@ namespace Ecom.API.Controllers
     [Authorize]
     public class ProductController : Controller
     {
+        private IUnitOfWork _unitOfWork;
         private IProductRepository _productRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository,
+            IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _productRepository = productRepository;
         }
 
@@ -83,6 +87,7 @@ namespace Ecom.API.Controllers
         /// <response code = "201">Product Created.</response>
         /// <response code = "400">Unable to create product.</response>
         [HttpPost]
+        [AllowAnonymous]
         [SwaggerResponse(HttpStatusCode.Created, "Returns the newly created product.", typeof(Product))]
         [SwaggerResponse(HttpStatusCode.BadRequest, "If the item is null")]
         public IActionResult Post([FromBody]ProductVM product)
@@ -97,7 +102,7 @@ namespace Ecom.API.Controllers
                 var productToPost = AutoMapper.Mapper.Map<Entities.Product>(product);
 
                 _productRepository.Add(productToPost);
-                _productRepository.Commit();
+                _unitOfWork.Commit();
 
                 return CreatedAtAction("Post", new { productCode = product.ProductCode }, productToPost);
             }
@@ -136,7 +141,7 @@ namespace Ecom.API.Controllers
                 producttToPatch = AutoMapper.Mapper.Map<Entities.Product>(productModel);
 
                 _productRepository.Update(producttToPatch);
-                _productRepository.Commit();
+                _unitOfWork.Commit();
 
                 return StatusCode((int)HttpStatusCode.OK, producttToPatch);
             }
@@ -159,7 +164,7 @@ namespace Ecom.API.Controllers
             try
             {
                 _productRepository.DeleteWhere(p => p.ProductCode == productCode);
-                _productRepository.Commit();
+                _unitOfWork.Commit();
 
                 return StatusCode((int)HttpStatusCode.OK);
             }

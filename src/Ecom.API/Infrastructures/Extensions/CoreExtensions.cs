@@ -60,7 +60,7 @@ namespace Ecom.API.Infrastructures.Extensions
 
                 options.IncludeXmlComments(swaggerCommentXmlPath);
                 options.OperationFilter<AuthOperationFilter>();
-                //options.DescribeAllEnumsAsStrings();
+                options.DescribeAllEnumsAsStrings();
             });
 
             return services;

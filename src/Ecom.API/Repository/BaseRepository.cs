@@ -35,18 +35,6 @@ namespace Ecom.API.Repository
             }
         }
 
-        public void Commit()
-        {
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void Delete(T entity)
         {
             try

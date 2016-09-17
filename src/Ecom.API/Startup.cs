@@ -38,9 +38,8 @@ namespace Ecom.API
                     options.UseSqlServer(Configuration["ConnectionString:DefaultConnection"],
                     b => b.MigrationsAssembly("Ecom.API")));
 
-            //Add Services in IoC Container
-            services.AddScoped(typeof(BaseContext));
-            services.AddTransient<IProductRepository, ProductRepository>();
+            //Added all services form extension method
+            services.AddApplicationServices();
 
             services.AddMvc()
                 .AddJsonOptions(options =>
